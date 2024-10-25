@@ -1,0 +1,30 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "POS Restaurant API",
+    "description": "The API provides a POS for restaurants",
+    "version": "1.0.0"
+  },
+  "host": "http://localhost:8000",
+  "basePath": "/v1",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Returns a list of users.",
+        "description": "Yes",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
