@@ -1,0 +1,13 @@
+- QR Code Generation
+- Invite Link
+- Email 
+- Order Management
+- Inventory Management
+- Payment integration
+- Delivery Integration
+- Table Management
+- Maps Integration
+- Customer Feedback
+- Loyalty Program
+- Menu Management
+- Multiple Branch Support 
