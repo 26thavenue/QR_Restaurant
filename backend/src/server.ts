@@ -20,6 +20,7 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);
+    console.log(process.env.DATABASE_URL!)
 });
 
 

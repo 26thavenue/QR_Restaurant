@@ -12,17 +12,185 @@
     "http"
   ],
   "paths": {
-    "/users": {
+    "/restaurants": {
       "get": {
-        "summary": "Returns a list of users.",
-        "description": "Yes",
+        "summary": "Returns a list of all restaurants.",
+        "description": "Retrieves a list of all restaurants from the database.",
         "produces": [
           "application/json"
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "A list of restaurants.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Restaurant"
+              }
+            }
           }
+        }
+      },
+      "post": {
+        "summary": "Creates a new restaurant.",
+        "description": "Creates a new restaurant entry in the database.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "restaurant",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Restaurant"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Restaurant created successfully.",
+            "schema": {
+              "$ref": "#/definitions/Restaurant"
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/verified": {
+      "get": {
+        "summary": "Returns a list of verified restaurants.",
+        "description": "Retrieves a list of verified restaurants.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of verified restaurants.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Restaurant"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/pending": {
+      "get": {
+        "summary": "Returns a list of pending restaurant requests.",
+        "description": "Retrieves a list of restaurants that are pending approval.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of pending restaurant requests.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Restaurant"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/{id}": {
+      "get": {
+        "summary": "Finds a restaurant by ID.",
+        "description": "Retrieves a restaurant by its ID.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A restaurant object.",
+            "schema": {
+              "$ref": "#/definitions/Restaurant"
+            }
+          },
+          "404": {
+            "description": "Restaurant not found."
+          }
+        }
+      },
+      "put": {
+        "summary": "Approves a pending restaurant request.",
+        "description": "Updates the status of a restaurant to approved.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurant status updated to approved.",
+            "schema": {
+              "$ref": "#/definitions/Restaurant"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a restaurant.",
+        "description": "Removes a restaurant from the database.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurant deleted successfully."
+          },
+          "404": {
+            "description": "Restaurant not found."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Restaurant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "1"
+        },
+        "name": {
+          "type": "string",
+          "example": "Restaurant Name"
+        },
+        "status": {
+          "type": "string",
+          "example": "VERIFIED"
+        },
+        "type": {
+          "type": "string",
+          "example": "Italian"
         }
       }
     }

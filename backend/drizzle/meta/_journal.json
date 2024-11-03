@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1730649733183,
+      "tag": "0000_nice_nick_fury",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1730649792054,
+      "tag": "0001_right_dragon_lord",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1730649905857,
+      "tag": "0002_fuzzy_vulture",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1730650798066,
+      "tag": "0003_elite_strong_guy",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1730651500388,
+      "tag": "0004_broken_ser_duncan",
+      "breakpoints": true
+    }
+  ]
+}
