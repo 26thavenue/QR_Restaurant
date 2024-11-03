@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: restaurant_pos_db
+    environment:
+      POSTGRES_USER: 26thavenue
+      POSTGRES_PASSWORD: LocalPostgresDB
+      POSTGRES_DB: restaurant_pos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+   
+
+
