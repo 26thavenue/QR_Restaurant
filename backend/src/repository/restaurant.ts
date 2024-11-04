@@ -1,26 +1,53 @@
 import db from "../db/index"
 import { eq } from "drizzle-orm"
 import {restaurantTable } from "../db/schema"
-import { RestaurantStatus, RestaurantType } from "../../types"
+import { RestaurantStatus, RestaurantType } from "../types"
 
 export class RestaurantRepository{
-    async findAll(){
-        return await db.select().from(restaurantTable).execute()
+
+  async findAll(limit: number =10, offset: number = 0) {
+        return await db.select()
+            .from(restaurantTable)
+            .limit(limit)
+            .offset(offset)
+            .execute();
+    }
+    
+    async findRestaurantByLocation(location:string,limit: number =10, offset: number = 0){
+        return await db.select()
+                        .from(restaurantTable)
+                        .where(eq(restaurantTable.location,location ))
+                        .limit(limit)
+                        .offset(offset)
+                        .execute()
     }
 
     async findOne(id:string){
         return await db.select().from(restaurantTable).where(eq(restaurantTable.id,id )).execute()
     }
 
-    async findVerifiedRestaurants(){
-        return await db.select().from(restaurantTable).where(eq(restaurantTable.status, RestaurantStatus.VERIFIED)).execute()
-    }
+    async findVerifiedRestaurants(limit: number =10, offset: number = 0){
+        return await db.select().from(restaurantTable)
+                        .where(eq(restaurantTable.status, RestaurantStatus.VERIFIED))
+                        .limit(limit)
+                        .offset(offset)
+                        .execute()
+                    }
 
-    async findPendingRestaurantRequests(){
-        return await db.select().from(restaurantTable).where(eq(restaurantTable.status, RestaurantStatus.PENDING)).execute()
+    async findPendingRestaurantRequests(limit: number =10, offset: number = 0){
+        return await db.select()
+                        .from(restaurantTable)
+                        .where(eq(restaurantTable.status, RestaurantStatus.PENDING))
+                        .limit(limit)
+                        .offset(offset)
+                        .execute()
     }
 
     async createRestaurants(restaurant:RestaurantType){
+        const doesRestaurantExists = await db.select().from(restaurantTable).where(eq(restaurantTable.name, restaurant.name)).execute()
+
+        if(doesRestaurantExists) return new Error("Restaurant Name exists")
+
         return await db.insert(restaurantTable).values(restaurant).returning()
     }
 
