@@ -5,7 +5,7 @@ import { RestaurantStatus, RestaurantType } from "../types"
 
 export class RestaurantRepository{
 
-  async findAll(limit: number =10, offset: number = 0) {
+  async findAll(limit: number = 10, offset: number = 0) {
         return await db.select()
             .from(restaurantTable)
             .limit(limit)
@@ -23,7 +23,9 @@ export class RestaurantRepository{
     }
 
     async findOne(id:string){
-        return await db.select().from(restaurantTable).where(eq(restaurantTable.id,id )).execute()
+        const result = await db.select().from(restaurantTable).where(eq(restaurantTable.id,id )).execute()
+
+        return result.length > 0 ? result[0] : null 
     }
 
     async findVerifiedRestaurants(limit: number =10, offset: number = 0){

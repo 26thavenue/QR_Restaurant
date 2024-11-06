@@ -11,6 +11,8 @@ export type RestaurantType = {
     location?:string
 }
 
+
+
 export enum FoodCategories {
     DRINKS = 'drinks',
     SNACKS = "SNACKS",
