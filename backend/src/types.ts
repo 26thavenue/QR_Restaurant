@@ -1,3 +1,13 @@
+import { menuItemsTable, menuTable, ordersTable } from "./db/schema";
+import { InferSelectModel } from "drizzle-orm";
+
+type BaseMenuItemType = InferSelectModel<typeof menuItemsTable>;
+
+type BaseOrderType = InferSelectModel<typeof ordersTable>
+
+// Utility to apply Partial to certain keys
+type Partialize<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
 export enum RestaurantStatus {
     PENDING = "pending",
     VERIFIED = "verified",
@@ -6,12 +16,24 @@ export enum RestaurantStatus {
 
 export type RestaurantType = {
     name:string
-    status: RestaurantStatus
+    status?: RestaurantStatus
     id?: string
     location?:string
+    description:string,
 }
 
+export type MenuType = Omit<Omit<InferSelectModel<typeof menuTable>,"id">, "createdAt">
 
+export type MenuItemType = Partialize<
+                                    Omit<BaseMenuItemType, "id" | "createdAt" | "rating" | "numberOrdered">,
+                                    "isDiscount" | "discountPercent"
+                                    >;
+
+
+export type OrdersType = Partialize<
+                                    Omit<BaseOrderType, "id" | "createdAt" >,
+                                    "updatedAt"
+                                    >;
 
 export enum FoodCategories {
     DRINKS = 'drinks',
@@ -24,6 +46,7 @@ export enum FoodCategories {
     SOUPS ="soups",
     SALAD = "salad",
     OTHER = "other",
-    APPETIZERS ="appetizers"
+    APPETIZERS ="appetizers",
+    OTHERS ="others"
 }
 

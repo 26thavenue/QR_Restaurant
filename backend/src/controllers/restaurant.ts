@@ -1,13 +1,11 @@
-import { RestaurantType } from './../types';
-import { Request, Response } from "express";
-import { RestaurantRepository } from "../repository/restaurant";
+import { type Request, type Response, RequestHandler } from "express";
+import  * as restaurantRepository  from "../repository/restaurant";
 import {ErrorMiddleware} from "../middlewares/errorMiddleware"
 import { validateWithSchema } from '../middlewares/zodValidator';
 import { RestaurantSchema } from '../utils/schema';
 
-const restaurantRepository = new RestaurantRepository();
 
-export const getRestaurants = async (req: Request, res: Response) => {
+export const getRestaurants= async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string, 10);
     const offset = parseInt(req.query.offset as string, 10);
@@ -170,6 +168,25 @@ export const createRestaurant = async (req: Request, res: Response) => {
 
   const body = req.body
 
-  const validatedBody = validateWithSchema(RestaurantSchema, req.body);
+  try {
+
+    const validatedBody = validateWithSchema(RestaurantSchema, body);
+
+    if(validatedBody.error){
+      return res.status(400).json(validatedBody.error) 
+    }
+
+
+    const newRestaurant = await restaurantRepository.createRestaurants(body)
+
+    return res.status(201).json({
+        message: "Request completed successfully",
+        data: newRestaurant,
+      })
+    
+  } catch (error) {
+         console.error("Error fetching restaurant:", error);
+         return res.status(500).json({ message: "An error occurred", error });
+  }
 
 }

@@ -1,5 +1,5 @@
 import { integer, pgTable, varchar,text, uuid,timestamp, time, boolean, primaryKey } from "drizzle-orm/pg-core";
-import { RestaurantStatus } from "../types";
+import { RestaurantStatus ,FoodCategories} from "../types";
 import { relations } from "drizzle-orm";
 
 export const restaurantTable = pgTable("restaurant", {
@@ -7,11 +7,12 @@ export const restaurantTable = pgTable("restaurant", {
   name: varchar({ length: 255 }).notNull().unique(),
   status:text('status').notNull().default(RestaurantStatus.PENDING),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  location: text("location")
+  location: text("location"),
+  description:text('description').notNull()
 });
 
-export const restaurantTableRelations = relations(restaurantTable, ({one, many})  =>({
-    menuTable:one(menuTable),
+export const restaurantTableRelations = relations(restaurantTable, ({ many})  =>({
+    menuTable:many(menuTable),
     table:many(table)
 }))
 
@@ -38,12 +39,13 @@ export const menuItemsTable = pgTable("menuItems", {
   timeTakenToPrepare:time("ttP").notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   rating:integer("rating"),
-  numberOrdered:integer("numberOrdered"),
+  numberOrdered:integer("numberOrdered").default(0),
   stock:integer("stock"),
-  restaurantId:text("restaurantId"),
-  menuId:text("menuId"),
+  restaurantId:text("restaurantId").notNull(),
+  menuId:text("menuId").notNull(),
   isDiscount: boolean("isDiscount").default(false),
-  discountPercent:integer("discountPercent").default(0)
+  discountPercent:integer("discountPercent").default(0),
+  categories:text('categories').notNull()
 });
 
 export const menuItemTableRelations = relations(menuItemsTable, ({one,many})  =>({
@@ -60,7 +62,7 @@ export const ordersTable = pgTable("orders", {
   name: varchar({ length: 255 }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  totalPrice: integer("totalPrice"),
+  totalPrice: integer("totalPrice").notNull(),
 
 });
 
