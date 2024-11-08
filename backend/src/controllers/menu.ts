@@ -13,15 +13,38 @@ export const  getAllMenus = async (req: Request, res: Response) =>{
                             isNaN(offset) ? undefined : offset
                             );
 
-        return res.status(200).json({
+         res.status(200).json({
             message: "Request completed successfully",
             data: menus,
         })
     } catch (error) {
         console.error("Error fetching menus:", error);
-        return res.status(500).json({ message: "An error occurred", error });
+         res.status(500).json({ message: "An error occurred", error });
     }
 }
+
+export const getMenuById = async(req: Request, res: Response) =>{
+    const {id} = req.params
+    try {
+
+        if(!id){
+            const error = new ErrorMiddleware( 'ID is required',400)
+             res.json(error.message).status(error.statusCode)
+        }
+
+        const menu = await menuRepository.getMenuById(id)
+
+         res.status(200).json({
+            message: "Request completed successfully",
+            data: menu,
+        })
+  } catch (error) {
+      console.error("Error fetching orders:", error);
+       res.status(500).json({ message: "An error occurred", error });
+  }
+
+}
+
 export const  createMenu = async (req: Request, res: Response) =>{
     const body = req.body
 
@@ -30,19 +53,19 @@ export const  createMenu = async (req: Request, res: Response) =>{
     const validatedBody = validateWithSchema(menuSchema, body);
 
     if(validatedBody.error){
-      return res.status(400).json(validatedBody.error) 
+       res.status(400).json(validatedBody.error) 
     }
 
     const newMenu = await menuRepository.createMenu(body)
 
-    return res.status(201).json({
+     res.status(201).json({
         message: "Request completed successfully",
         data: newMenu,
       })
     
   } catch (error) {
          console.error("Error fetching menus:", error);
-         return res.status(500).json({ message: "An error occurred", error });
+          res.status(500).json({ message: "An error occurred", error });
   }
 }
 export const  getAllRestaurantMenu = async (req: Request, res: Response) =>{
@@ -51,18 +74,18 @@ export const  getAllRestaurantMenu = async (req: Request, res: Response) =>{
 
         if(!id){
             const error = new ErrorMiddleware( 'ID is required',400)
-            return res.json(error.message).status(error.statusCode)
+             res.json(error.message).status(error.statusCode)
         }
 
         const menus = await menuRepository.getAllRestaurantsMenu(id)
 
-        return res.status(200).json({
+         res.status(200).json({
             message: "Request completed successfully",
             data: menus,
         })
   } catch (error) {
       console.error("Error fetching orders:", error);
-      return res.status(500).json({ message: "An error occurred", error });
+       res.status(500).json({ message: "An error occurred", error });
   }
 
 
@@ -73,22 +96,22 @@ export const deleteMenu = async (req: Request, res: Response) =>{
 
         if(!id){
             const error = new ErrorMiddleware( 'ID is required',400)
-            return res.json(error.message).status(error.statusCode)
+             res.json(error.message).status(error.statusCode)
         }
 
         const menu= await menuRepository.deleteMenu(id)
 
         if(menu.length === 0 ){
             const error = new ErrorMiddleware( 'Invalid ID',400)
-            return res.json(error.message).status(error.statusCode)
+             res.json(error.message).status(error.statusCode)
         }
 
-        return res.status(200).json({
+         res.status(200).json({
                 message: "Request completed successfully",
             })
 
   } catch (error) {
       console.error("Error fetching orders:", error);
-      return res.status(500).json({ message: "An error occurred", error });
+       res.status(500).json({ message: "An error occurred", error });
   }
 }

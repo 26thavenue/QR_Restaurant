@@ -15,13 +15,13 @@ export const getAllOrders = async(req: Request, res: Response) =>{
                             isNaN(offset) ? undefined : offset
                             );
 
-        return res.status(200).json({
+         res.status(200).json({
             message: "Request completed successfully",
             data: orders,
         })
     } catch (error) {
         console.error("Error fetching orders:", error);
-        return res.status(500).json({ message: "An error occurred", error });
+         res.status(500).json({ message: "An error occurred", error });
     }
 }
 
@@ -32,7 +32,7 @@ export const getRestaurantOrders= async(req: Request, res: Response) => {
 
     if(!id){
         const error = new ErrorMiddleware( 'ID is required',400)
-        return res.json(error.message).status(error.statusCode)
+         res.json(error.message).status(error.statusCode)
     }
 
     try {
@@ -41,7 +41,7 @@ export const getRestaurantOrders= async(req: Request, res: Response) => {
 
         if(!isRestaurant) {
             const error = new ErrorMiddleware( 'The Restaurant des not exist',400)
-            return res.json(error.message).status(error.statusCode)
+             res.json(error.message).status(error.statusCode)
         }
 
         const orders = await orderRepository.getRestaurantOrders(
@@ -50,10 +50,10 @@ export const getRestaurantOrders= async(req: Request, res: Response) => {
                                 isNaN(offset) ? undefined : offset
                             )
 
-        return res.status(200).json(orders)
+         res.status(200).json(orders)
     } catch (error) {
         console.error("Error fetching ordrs:", error);
-        return res.status(500).json({ message: "An error occurred", error });
+         res.status(500).json({ message: "An error occurred", error });
     }
 }
 
@@ -72,7 +72,7 @@ export const getAllOrdersWTR = async(req: Request, res: Response) => {
 
         if(isValidDate(startDate) || isValidDate(endDate) ){
              const error = new ErrorMiddleware( 'Invalid Date Format',400)
-            return res.json(error.message).status(error.statusCode)
+             res.json(error.message).status(error.statusCode)
         }
 
         const orders = await orderRepository.getAllOrdersWithinATimeRange(
@@ -83,13 +83,13 @@ export const getAllOrdersWTR = async(req: Request, res: Response) => {
                             );
 
 
-        return res.status(200).json({
+         res.status(200).json({
             message: "Request completed successfully",
             data: orders,
         })
     } catch (error) {
         console.error("Error fetching orders:", error);
-        return res.status(500).json({ message: "An error occurred", error });
+         res.status(500).json({ message: "An error occurred", error });
     }
 }
 
@@ -100,7 +100,7 @@ export const getAllRestaurantOrdersWTR = async(req: Request, res: Response) => {
 
      if(!id){
         const error = new ErrorMiddleware( 'ID is required',400)
-        return res.json(error.message).status(error.statusCode)
+         res.json(error.message).status(error.statusCode)
     }
 
     try {
@@ -113,7 +113,7 @@ export const getAllRestaurantOrdersWTR = async(req: Request, res: Response) => {
 
         if(isValidDate(startDate) || isValidDate(endDate) ){
              const error = new ErrorMiddleware( 'Invalid Date Format',400)
-            return res.json(error.message).status(error.statusCode)
+             res.json(error.message).status(error.statusCode)
         }
 
         const orders = await orderRepository.getRestaurantOrdersWithinTimeRange(
@@ -125,13 +125,13 @@ export const getAllRestaurantOrdersWTR = async(req: Request, res: Response) => {
                             );
 
 
-        return res.status(200).json({
+         res.status(200).json({
             message: "Request completed successfully",
             data: orders,
         })
     } catch (error) {
         console.error("Error fetching orders:", error);
-        return res.status(500).json({ message: "An error occurred", error });
+         res.status(500).json({ message: "An error occurred", error });
     }
 }
 
@@ -142,19 +142,19 @@ export const createOrder = async(req: Request, res: Response) => {
         const validatedBody = validateWithSchema(orderSchema, body);
 
         if(validatedBody.error){
-            return res.status(400).json(validatedBody.error) 
+             res.status(400).json(validatedBody.error) 
         }
 
         const newOrder = await orderRepository.createOrder(body)
 
-        return res.status(201).json({
+         res.status(201).json({
             message: "Request completed successfully",
             data: newOrder,
         })
         
     } catch (error) {
          console.error("Error fetching orders:", error);
-         return res.status(500).json({ message: "An error occurred", error });
+          res.status(500).json({ message: "An error occurred", error });
   }
 
 }
@@ -164,22 +164,22 @@ export const deleteOrder = async (req:Request,res:Response) =>{
 
     if(!id){
         const error = new ErrorMiddleware( 'ID is required',400)
-        return res.json(error.message).status(error.statusCode)
+         res.json(error.message).status(error.statusCode)
     }
     try {
         const order= await orderRepository.deleteOrder(id)
 
         if(order.length === 0 ){
             const error = new ErrorMiddleware( 'Invalid ID',400)
-            return res.json(error.message).status(error.statusCode)
+             res.json(error.message).status(error.statusCode)
         }
 
-        return res.status(200).json({
+         res.status(200).json({
                 message: "Request completed successfully",
             })
 
   } catch (error) {
       console.error("Error fetching orders:", error);
-      return res.status(500).json({ message: "An error occurred", error });
+       res.status(500).json({ message: "An error occurred", error });
   }
 }

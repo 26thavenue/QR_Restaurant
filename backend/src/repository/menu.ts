@@ -12,6 +12,10 @@ export async function getAllRestaurantsMenu (restaurantId:string){
     return result.length > 0 ? result[0] : null 
 }
 
+export async function getMenuById(menuId:string){
+    return await db.select().from(menuTable).where(eq(menuTable.id, menuId)).execute()
+}
+
 export async function getAllMenus(limit: number = 10, offset: number = 0){
     return await db.select()
                     .from(menuTable)
