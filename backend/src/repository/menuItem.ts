@@ -15,7 +15,7 @@ export async function deleteMenuItem( itemId:string){
     return await db.delete(menuItemsTable).where(eq(menuItemsTable.id, itemId)).execute()
 }
 
-export async function getItemsByPrice(){
+export async function sortItemsByPrice(){
     return await db.select().from(menuItemsTable).orderBy(asc(menuItemsTable.price))
 }
 
@@ -23,10 +23,10 @@ export async function getItemsByRestaurant(restaurantId:string){
     return await db.select().from(menuItemsTable).where(eq(menuItemsTable.restaurantId,restaurantId))
 }
 
-export async function getItemsByRating(){
+export async function sortItemsByRating(){
     return await db.select().from(menuItemsTable).orderBy(desc(menuItemsTable.price)).execute()
 }
 
-export async function updateStock(newStock:number , itemId:string){
-    return await db.update(menuItemsTable).set({stock:newStock}).where(eq(menuItemsTable.id, itemId)).execute()
-}
+// export async function updateStock(newStock:number , itemId:string){
+//     return await db.update(menuItemsTable).set({stock:newStock}).where(eq(menuItemsTable.id, itemId)).execute()
+// }

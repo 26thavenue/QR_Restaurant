@@ -1,9 +1,8 @@
-import { type Request, type Response, RequestHandler } from "express";
+import { type Request, type Response } from "express";
 import  * as restaurantRepository  from "../repository/restaurant";
 import {ErrorMiddleware} from "../middlewares/errorMiddleware"
 import { validateWithSchema } from '../middlewares/zodValidator';
 import { RestaurantSchema } from '../utils/schema';
-
 
 export const getRestaurants= async (req: Request, res: Response) => {
   try {
@@ -189,4 +188,30 @@ export const createRestaurant = async (req: Request, res: Response) => {
          return res.status(500).json({ message: "An error occurred", error });
   }
 
+}
+
+export const deleteRestaurant = async (req: Request, res: Response) => {
+  const {id} = req.params
+  try {
+
+     if(!id){
+        const error = new ErrorMiddleware( 'ID is required',400)
+        return res.json(error.message).status(error.statusCode)
+     }
+
+  const restaurant= await restaurantRepository.deleteRestaurant(id)
+
+  if(restaurant.length === 0 ){
+     const error = new ErrorMiddleware( 'Invalid ID',400)
+     return res.json(error.message).status(error.statusCode)
+  }
+
+  return res.status(200).json({
+        message: "Request completed successfully",
+      })
+
+  } catch (error) {
+      console.error("Error fetching restaurant:", error);
+      return res.status(500).json({ message: "An error occurred", error });
+  }
 }

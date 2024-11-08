@@ -42,6 +42,25 @@ export async function getRestaurantOrdersWithinTimeRange(
     .execute();
 }
 
+export async function getRestaurantOrders(
+  restaurantId: string,
+  limit: number = 10, 
+  offset: number = 0
+) {
+  return await db.select()
+    .from(ordersTable)
+    .innerJoin(menuItemsOnOrdersTable, eq(menuItemsOnOrdersTable.orderId, ordersTable.id))
+    .innerJoin(menuItemsTable, eq(menuItemsTable.id, menuItemsOnOrdersTable.menuItemId))
+    .where(
+        eq(menuItemsTable.restaurantId, restaurantId), 
+    )
+    .limit(limit)
+    .offset(offset)
+    .execute();
+}
+
+
+
 export async function createOrder(order:OrdersType){
     return await db.insert(ordersTable).values(order).returning()
 }
@@ -54,7 +73,7 @@ export async function getAllOrders(limit: number = 10, offset: number = 0){
             .execute();
 }
 
-export async function deleteOrders(id:string){
+export async function deleteOrder(id:string){
      return await db.delete(ordersTable)
                         .where(eq(ordersTable.id, id))
                         .returning();
