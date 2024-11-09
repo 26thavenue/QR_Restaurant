@@ -4,17 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx --watch src/server.ts",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch",
-    "test:ts": "ts-jest config:init"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
+    "dev": "tsx watch src/server.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": " Oni Oluwatomiwa",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^22.7.9",
@@ -23,6 +16,7 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.0",
     "express": "^4.21.1",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "pg": "^8.13.1",

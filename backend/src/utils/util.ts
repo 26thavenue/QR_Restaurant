@@ -17,3 +17,37 @@ export function isValidDate(dateString:string) {
   const isValid = !isNaN(date.getTime()) && dateString === date.toISOString().slice(0, 10);
   return isValid;
 }
+
+// const corsConfig = () => {
+//   const allowedOrigins = *
+
+//   const options = {
+//     origin: (origin, callback) => {
+//       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+//         callback(null, true);  
+//       } else {
+//         callback(new Error('Not allowed by CORS'), false);  
+//       }
+//     },
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],  
+//     allowedHeaders: ['Content-Type', 'Authorization'],  
+//     credentials: true,  
+//     preflightContinue: false,  
+//     optionsSuccessStatus: 204 
+//   };
+
+//   return options;
+// };
+
+export const corsConfig = () => {
+  const options = {
+    origin: true,  // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+  };
+
+  return options;
+};;
