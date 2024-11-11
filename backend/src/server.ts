@@ -24,6 +24,10 @@ app.use(helmet())
 
 app.use(cors(corsConfig()))
 
+
+app.get('/', (req, res) => {
+    res.send('Inside the API');
+});
 app.get('/health', (req, res) => {
     res.send('Health Check');
 });

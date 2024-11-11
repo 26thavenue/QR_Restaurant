@@ -1,48 +1,44 @@
-import { integer, pgTable, varchar,text, uuid,timestamp, time, boolean, primaryKey } from "drizzle-orm/pg-core";
+import { integer, pgTable, text, uuid,timestamp, time, boolean, primaryKey } from "drizzle-orm/pg-core";
 import { RestaurantStatus ,FoodCategories} from "../types";
 import { relations } from "drizzle-orm";
 
 export const restaurantTable = pgTable("restaurant", {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar({ length: 255 }).notNull().unique(),
+  name: text("name").notNull().unique(),
   status:text('status').notNull().default(RestaurantStatus.PENDING),
-  createdAt: timestamp('createdAt', { withTimezone: true }).notNull().defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   location: text("location"),
-  description:text('description').notNull()
+  description:text('description')
 });
 
-export const restaurantTableRelations = relations(restaurantTable, ({ many})  =>({
-    menuTable:many(menuTable),
-    table:many(table)
-}))
+export const locationTable = pgTable("location", {
+  id: uuid('id').defaultRandom().primaryKey(),
+  country: text('country').notNull(),
+  state:text('state').notNull(),
+  city: text('city').notNull(),
+  restaurantId:uuid('restaurant_id').notNull().references(()=> restaurantTable.id),
+  address: text('address').notNull()
+})
 
 export const menuTable = pgTable("menu", {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar({ length: 255 }).notNull(),
-  createdAt: timestamp('createdAt', { withTimezone: true }).notNull().defaultNow(),
-  restaurantId:text("restaurantId").references(() => restaurantTable.id)
+  name: text("name").notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  restaurantId:uuid("restaurant_id").references(() => restaurantTable.id)
 });
-
-export const menuTableRelations = relations(menuTable, ({one, many})  =>({
-    restaurantTable:one(restaurantTable, {
-      fields:[menuTable.restaurantId],
-      references:[restaurantTable.id]
-    }),
-    menuItemsTable: many(menuItemsTable)
-}))
 
 export const menuItemsTable = pgTable("menuItems", {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar({ length: 255 }).notNull(),
+  name: text("name").notNull(),
   price:integer("price").notNull(),
-  description:text().notNull(),
+  description:text("description").notNull(),
   timeTakenToPrepare:time("ttP").notNull(),
-  createdAt: timestamp('createdAt', { withTimezone: true }).notNull().defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   rating:integer("rating"),
   numberOrdered:integer("numberOrdered").default(0),
   stock:integer("stock"),
-  restaurantId:text("restaurantId").notNull(),
-  menuId:text("menuId").notNull(),
+  restaurantId:uuid("restaurantId").notNull(),
+  menuId:uuid("menuId").notNull().references(() =>menuTable.id),
   isDiscount: boolean("isDiscount").default(false),
   discountPercent:integer("discountPercent").default(0),
   categories:text('categories').notNull()
@@ -59,25 +55,57 @@ export const menuItemTableRelations = relations(menuItemsTable, ({one,many})  =>
 
 export const ordersTable = pgTable("orders", {
   id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar({ length: 255 }).notNull(),
-  createdAt: timestamp('createdAt', { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp('updatedAt', { withTimezone: true }).notNull().defaultNow(),
+  name: text("name").notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
   totalPrice: integer("totalPrice").notNull(),
-
 });
 
-export const orderTableRelations = relations(ordersTable,({many})  =>({
-    menuItemsOnOrdersTable:many(menuItemsOnOrdersTable)
-}))
+export const table = pgTable("orders", {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  restaurantId:uuid("restaurant_id").references(() => restaurantTable.id)
+});
 
-export const menuItemsOnOrdersTable = pgTable("menuItemsOnOrdersTable",{
-    menuItemId:text("menuItemId").notNull().references(() => menuItemsTable.id),
-    orderId: text("orderId").notNull().references(() => ordersTable.id),
+// JOINT TABLES
+
+export const menuItemsOnOrdersTable = pgTable("menu_items_on_ordersTable",{
+    menuItemId:uuid("menuItemId"),
+    orderId: uuid("orderId"),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.menuItemId, t.orderId] }),
   }),
 )
+
+
+//  RELATIONS
+
+export const restaurantTableRelations = relations(restaurantTable, ({ one,many})  =>({
+    menuTable:many(menuTable),
+    table:many(table),
+    location: many(locationTable)
+}))
+
+export const orderTableRelations = relations(ordersTable,({many})  =>({
+    menuItemsOnOrdersTable:many(menuItemsOnOrdersTable)
+}))
+
+export const locationTableRelations = relations(locationTable, ({ one})  =>({
+    restaurantTable:one(restaurantTable, {
+      fields:[locationTable.restaurantId],
+      references:[restaurantTable.id]
+    }),
+}))
+
+export const menuTableRelations = relations(menuTable, ({one, many})  =>({
+    restaurantTable:one(restaurantTable, {
+      fields:[menuTable.restaurantId],
+      references:[restaurantTable.id]
+    }),
+    menuItemsTable: many(menuItemsTable)
+}))
 
 export const menuItemsOnOrdersTableRelations = relations(menuItemsOnOrdersTable, ({ one }) => ({
     menuItem: one(menuItemsTable, {
@@ -90,20 +118,14 @@ export const menuItemsOnOrdersTableRelations = relations(menuItemsOnOrdersTable,
     }),
 }))
 
-
-export const table = pgTable("orders", {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar({ length: 255 }).notNull(),
-  createdAt: timestamp('createdAt', { withTimezone: true }).notNull().defaultNow(),
-  restaurantId:text("restaurantId").references(() => restaurantTable.id)
-});
-
 export const tableRelations = relations(table, ({one}) =>({
   restaurant:one(restaurantTable,{
     fields:[table.restaurantId],
     references:[restaurantTable.id]
   })
 }))
+
+
 
 
 
@@ -134,20 +156,3 @@ export const tableRelations = relations(table, ({one}) =>({
 
 
 
-// export const inventoryTable = pgTable( "inventory",{
-//     id: uuid('id').defaultRandom().primaryKey(),
-//     name: varchar({ length: 255 }).notNull(),
-//     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-// })
-
-// export const paymentTable = pgTable( "payments",{
-//      id: uuid('id').defaultRandom().primaryKey(),
-//     name: varchar({ length: 255 }).notNull(),
-//     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-// })
-
-// export const userTable = pgTable( "users",{
-//      id: uuid('id').defaultRandom().primaryKey(),
-//     name: varchar({ length: 255 }).notNull(),
-//     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-// })
