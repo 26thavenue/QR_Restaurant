@@ -65,7 +65,9 @@ export const getPendingRestaurants = async (req: Request, res: Response) => {
 
 export const getRestaurantsByLocation = async (req: Request, res: Response) => {
   try {
-    const location = req.query.location as string
+    const city = req.query.city as string
+    const state = req.query.city as string
+    const country = req.query.country as string
     const limit = parseInt(req.query.limit as string, 10);
     const offset = parseInt(req.query.offset as string, 10);
 
@@ -74,7 +76,10 @@ export const getRestaurantsByLocation = async (req: Request, res: Response) => {
         res.json(error.message).status(error.statusCode)
     }
 
-    const restaurants = await restaurantRepository.findPendingRestaurantRequests(
+    const restaurants = await restaurantRepository.findRestaurantByLocation(
+      city,
+      state,
+      country,
       isNaN(limit) ? undefined : limit,
       isNaN(offset) ? undefined : offset
     );
@@ -184,14 +189,14 @@ export const createRestaurant = async (req: Request, res: Response) => {
   const body = req.body
 
   try {
-
+    // console.log("body :" ,req.body);
     const validatedBody = validateWithSchema(RestaurantSchema, body);
 
-    if(validatedBody.error){
+    if(validatedBody?.error){
+       console.log(validatedBody);
        res.status(400).json(validatedBody.error) 
+       return
     }
-
-
     const newRestaurant = await restaurantRepository.createRestaurants(body)
 
      res.status(201).json({
@@ -200,8 +205,8 @@ export const createRestaurant = async (req: Request, res: Response) => {
       })
     
   } catch (error) {
-         console.error("Error fetching restaurant:", error);
-          res.status(500).json({ message: "An error occurred", error });
+        console.error("Error fetching restaurant:", error);
+        res.status(500).json({ message: "An error occurred", error });
   }
 
 }

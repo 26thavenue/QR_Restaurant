@@ -1,16 +1,16 @@
 import db from "../db/index"
 import { eq } from "drizzle-orm"
-import {ordersTable, menuItemsTable,menuItemsOnOrdersTable } from "../db/schema"
+import {orders, menuItems,menuItemsOnOrders } from "../db/schema"
 import { OrdersType } from "../types"
 import { and, gte, lte } from 'drizzle-orm';
 
 export async function getAllOrdersWithinATimeRange(startTime: Date, endTime: Date, limit: number = 10,  offset: number = 0) {
     return await db.select()
-        .from(ordersTable)
+        .from(orders)
         .where(
             and(
-                gte(ordersTable.createdAt, startTime),
-                lte(ordersTable.createdAt, endTime)
+                gte(orders.createdAt, startTime),
+                lte(orders.createdAt, endTime)
             )
         )
         .limit(limit)
@@ -27,14 +27,14 @@ export async function getRestaurantOrdersWithinTimeRange(
   offset: number = 0
 ) {
   return await db.select()
-    .from(ordersTable)
-    .innerJoin(menuItemsOnOrdersTable, eq(menuItemsOnOrdersTable.orderId, ordersTable.id))
-    .innerJoin(menuItemsTable, eq(menuItemsTable.id, menuItemsOnOrdersTable.menuItemId))
+    .from(orders)
+    .innerJoin(menuItemsOnOrders, eq(menuItemsOnOrders.orderId, orders.id))
+    .innerJoin(menuItems, eq(menuItems.id, menuItemsOnOrders.menuItemId))
     .where(
       and(
-        eq(menuItemsTable.restaurantId, restaurantId), 
-        gte(ordersTable.createdAt, startTime),         
-        lte(ordersTable.createdAt, endTime)           
+        eq(menuItems.restaurantId, restaurantId), 
+        gte(orders.createdAt, startTime),         
+        lte(orders.createdAt, endTime)           
       )
     )
     .limit(limit)
@@ -48,11 +48,11 @@ export async function getRestaurantOrders(
   offset: number = 0
 ) {
   return await db.select()
-    .from(ordersTable)
-    .innerJoin(menuItemsOnOrdersTable, eq(menuItemsOnOrdersTable.orderId, ordersTable.id))
-    .innerJoin(menuItemsTable, eq(menuItemsTable.id, menuItemsOnOrdersTable.menuItemId))
+    .from(orders)
+    .innerJoin(menuItemsOnOrders, eq(menuItemsOnOrders.orderId, orders.id))
+    .innerJoin(menuItems, eq(menuItems.id, menuItemsOnOrders.menuItemId))
     .where(
-        eq(menuItemsTable.restaurantId, restaurantId), 
+        eq(menuItems.restaurantId, restaurantId), 
     )
     .limit(limit)
     .offset(offset)
@@ -62,19 +62,19 @@ export async function getRestaurantOrders(
 
 
 export async function createOrder(order:OrdersType){
-    return await db.insert(ordersTable).values(order).returning()
+    return await db.insert(orders).values(order).returning()
 }
 
 export async function getAllOrders(limit: number = 10, offset: number = 0){
     return await db.select()
-            .from(ordersTable)
+            .from(orders)
             .limit(limit)
             .offset(offset)
             .execute();
 }
 
 export async function deleteOrder(id:string){
-     return await db.delete(ordersTable)
-                        .where(eq(ordersTable.id, id))
+     return await db.delete(orders)
+                        .where(eq(orders.id, id))
                         .returning();
 }

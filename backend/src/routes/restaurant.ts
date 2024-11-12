@@ -6,7 +6,7 @@ const restaurantRouter = express.Router();
 restaurantRouter.get('/', restaurantController.getRestaurants)
 restaurantRouter.get('/:id', restaurantController.getRestaurantById)
 restaurantRouter.get('/pending', restaurantController.getPendingRestaurants)
-restaurantRouter.get('/loc', restaurantController.getPendingRestaurants)
+// restaurantRouter.get('/loc', restaurantController.getPendingRestaurants)
 restaurantRouter.get('/verified', restaurantController.getVerifiedRestaurants)
 restaurantRouter.post('/', restaurantController.createRestaurant)
 restaurantRouter.put('/pending/:id', restaurantController.approvePendingRestaurants)

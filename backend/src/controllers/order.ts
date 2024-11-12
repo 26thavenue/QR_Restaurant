@@ -5,6 +5,7 @@ import { validateWithSchema } from '../middlewares/zodValidator';
 import { ErrorMiddleware } from "../middlewares/errorMiddleware";
 import { isValidDate } from "../utils/util";
 import { orderSchema } from "../utils/schema";
+import { buyItem } from '../repository/menuItem';
 
 export const getAllOrders = async(req: Request, res: Response) =>{
     try {
@@ -13,7 +14,7 @@ export const getAllOrders = async(req: Request, res: Response) =>{
         const orders = await orderRepository.getAllOrders(
                             isNaN(limit) ? undefined : limit,
                             isNaN(offset) ? undefined : offset
-                            );
+                        );
 
          res.status(200).json({
             message: "Request completed successfully",
@@ -135,29 +136,63 @@ export const getAllRestaurantOrdersWTR = async(req: Request, res: Response) => {
     }
 }
 
-export const createOrder = async(req: Request, res: Response) => {
-    const body = req.body
-
+export const createOrder = async (req: Request, res: Response) => {
+    const body = req.body;
     try {
         const validatedBody = validateWithSchema(orderSchema, body);
-
-        if(validatedBody.error){
-             res.status(400).json(validatedBody.error) 
+        if (validatedBody.error) {
+            return res.status(400).json(validatedBody.error);
         }
+        for (const item of body.items) {
+            await buyItem(item.itemId);
+        }
+        const newOrder = await orderRepository.createOrder(body);
 
-        const newOrder = await orderRepository.createOrder(body)
-
-         res.status(201).json({
+        res.status(201).json({
             message: "Request completed successfully",
             data: newOrder,
-        })
+        });
         
     } catch (error) {
-         console.error("Error fetching orders:", error);
-          res.status(500).json({ message: "An error occurred", error });
-  }
+        console.error("Error creating order:", error);
+        res.status(500).json({ message: "An error occurred", error });
+    }
+};
 
-}
+// export const createOrder = async (req: Request, res: Response) => {
+//     const body = req.body;
+
+//     try {
+//         // Validate the request body with the schema
+//         const validatedBody = validateWithSchema(orderSchema, body);
+
+//         if (validatedBody.error) {
+//             return res.status(400).json(validatedBody.error);
+//         }
+
+//         // Begin a transaction for the order and stock updates
+//         const newOrder = await db.transaction(async (tx) => {
+//             // Process each item in the order
+//             for (const item of body.items) {
+//                 // Decrease stock and increase number ordered for each item
+//                 await buyItem(item.id); // Assumes `buyItem` is already set up for transaction
+//             }
+
+//             // After all items are processed, create the order
+//             return await orderRepository.createOrder(tx, body);
+//         });
+
+//         // Respond with the newly created order data
+//         res.status(201).json({
+//             message: "Order created successfully",
+//             data: newOrder,
+//         });
+
+//     } catch (error) {
+//         console.error("Error creating order:", error);
+//         res.status(500).json({ message: "An error occurred", error });
+//     }
+// };
 
 export const deleteOrder = async (req:Request,res:Response) =>{
     const {id} = req.params

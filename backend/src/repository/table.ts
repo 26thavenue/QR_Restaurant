@@ -1,3 +1,3 @@
 import db from "../db/index"
 import { eq } from "drizzle-orm"
-import {table } from "../db/schema"
+// import {table } from "../db/schema"

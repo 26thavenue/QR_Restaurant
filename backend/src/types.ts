@@ -1,9 +1,9 @@
-import { menuItemsTable, menuTable, ordersTable } from "./db/schema";
+import { menuItems, menu, orders } from "./db/schema";
 import { InferSelectModel } from "drizzle-orm";
 
-type BaseMenuItemType = InferSelectModel<typeof menuItemsTable>;
+type BaseMenuItemType = InferSelectModel<typeof menuItems>;
 
-type BaseOrderType = InferSelectModel<typeof ordersTable>
+type BaseOrderType = InferSelectModel<typeof orders>
 
 // Utility to apply Partial to certain keys
 type Partialize<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -22,7 +22,7 @@ export type RestaurantType = {
     description:string,
 }
 
-export type MenuType = Omit<Omit<InferSelectModel<typeof menuTable>,"id">, "createdAt">
+export type MenuType = Omit<Omit<InferSelectModel<typeof menu>,"id">, "createdAt">
 
 export type MenuItemType = Partialize<
                                     Omit<BaseMenuItemType, "id" | "createdAt" | "rating" | "numberOrdered">,

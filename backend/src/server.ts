@@ -20,6 +20,8 @@ app.use(morgan('dev'))
 
 app.use(loggerMiddleware)
 
+app.use(express.json());
+
 app.use(helmet())
 
 app.use(cors(corsConfig()))

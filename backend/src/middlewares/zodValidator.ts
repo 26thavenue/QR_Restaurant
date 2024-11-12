@@ -2,11 +2,13 @@ import { ZodSchema } from "zod";
 
 export const validateWithSchema = <T>(schema: ZodSchema<T>, data: unknown): { data?: T; error?: string } => {
   const result = schema.safeParse(data);
+  console.log(schema);
   if (result.success) {
     return { data: result.data };
-  } else {
+  } else {    
+      const errorMessages = JSON.stringify(result.error)
     return {
-      error: `Validation Error: ${result.error.issues.map(issue => issue.message).join(", ")}`,
+      error: `message: Validation Error - ${errorMessages}`,
     };
   }
 };
