@@ -1,4 +1,5 @@
 export enum URLS { 
     LOGIN = '/login',
-    SIGNUP ='signup'
+    SIGNUP ='signup',
+    MENU ='/menus'
 }

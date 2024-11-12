@@ -10,7 +10,9 @@ const Navbar = () => {
             <h1 className="cursor-pointer hover:p-1 hover:text-neutral-400 transition-color duration-300 ease-in-out ">Products</h1>
             <h1 className="cursor-pointer hover:p-1 hover:text-neutral-400 transition-color duration-300 ease-in-out ">Contact Us</h1>
             <h1 className="cursor-pointer hover:p-1 hover:text-neutral-400 transition-color duration-300 ease-in-out ">Pricing</h1>
-            <h1 className="cursor-pointer hover:p-1 hover:text-neutral-400 transition-color duration-300 ease-in-out ">Browse</h1>
+            <Link to ={URLS.MENU}>
+              <h1 className="cursor-pointer hover:p-1 hover:text-neutral-400 transition-color duration-300 ease-in-out ">Browse</h1>
+            </Link>      
         </div>
         <div className="flex items-center justify-center gap-4 ">
             <Link to ={URLS.LOGIN} className={buttonVariants({ variant: "default" })}>Login</Link>
